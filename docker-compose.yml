@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  go:
+    build: ./golang_eikan/build/package/
+    ports:
+      - 8000:8000
+    tty: true
+    volumes:
+      - ./golang_eikan:/var/eikan
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:4.4
+    restart: always
+    volumes:
+      - ./mongodb/data:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
