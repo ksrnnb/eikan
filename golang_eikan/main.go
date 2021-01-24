@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/ksrnnb/eikan/db"
 )
 
 var addr string
@@ -17,6 +19,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	db.MongoInit()
 	http.HandleFunc("/", hello)
 	http.ListenAndServe(port, nil)
 }
