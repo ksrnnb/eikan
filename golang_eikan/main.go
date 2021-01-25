@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ksrnnb/eikan/configs"
 	"github.com/ksrnnb/eikan/db"
 )
 
@@ -12,6 +13,8 @@ var port string
 
 func init() {
 	port = ":8000"
+	cfg := configs.New()
+	fmt.Println(cfg)
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {

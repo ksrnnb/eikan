@@ -1,3 +1,4 @@
 mongodb/data
 golang_eikan/main
 golang_eikan/go.sum
+golang_eikan/configs/config.ini
