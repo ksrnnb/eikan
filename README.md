@@ -20,6 +20,9 @@ docker-compose up -d
 cd flutter_eikan
 flutter pub get
 ```
+- 環境変数ファイル
+
+`golang_eikan/configs/config.example.ini` のファイルをコピーして、`config.ini`にリネームする。
 
 ## GOのビルド
 ```bash
