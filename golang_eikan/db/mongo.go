@@ -5,54 +5,78 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ksrnnb/eikan/configs"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// TODO: ハードコード修正
-func MongoInit() {
-	// https://docs.mongodb.com/drivers/go/
-	uri := "mongodb://mongo:27017/test"
+var endpoint string
+var username string
+var password string
+var client *mongo.Client
+var ctx context.Context
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+func init() {
+	cfg := configs.New()
+	endpoint = cfg["DB.ENDPOINT"]
+	username = cfg["DB.USERNAME"]
+	password = cfg["DB.PASSWORD"]
+}
+
+// Connect create connection to MongoDB and close connection end of this method.
+func Connect() {
+	// https://docs.mongodb.com/drivers/go/
+	// context.TODO()のほうがいい？
+	// https://godoc.org/context#Background
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// https://pkg.go.dev/go.mongodb.org/mongo-driver/mongo#example-Connect-SCRAM
 	credential := options.Credential{
-		Username: "root",
-		Password: "root",
+		Username: username,
+		Password: password,
 	}
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri).SetAuth(credential))
+
+	var err error
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(endpoint).SetAuth(credential))
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
 
-	collection := client.Database("test").Collection("testCollection")
+	// TODO: 閉じるタイミングを考える必要あり。
+	defer Close()
 
-	type Test struct {
-		name  string
-		email string
-	}
-	test := Test{
-		name:  "test",
-		email: "test@test",
+	collection := client.Database("test").Collection("trainers")
+
+	// You will be using this Trainer type later in the program
+	// 大文字にしないとマーシャルされない、たぶん。
+	type Trainer struct {
+		Name string
+		Age  int
+		City string
 	}
 
-	tmp, err := collection.InsertOne(ctx, test)
+	ash := Trainer{"Ash", 10, "Pallet Town"}
+	// misty := Trainer{"Misty", 10, "Cerulean City"}
+	// brock := Trainer{"Brock", 15, "Pewter City"}
+
+	tmp, err := collection.InsertOne(context.TODO(), ash)
 
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println("tmp: ", tmp)
 	}
-	// Ping the primary
-	// if err := client.Ping(ctx, readpref.Primary()); err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println("Successfully connected and pinged.")
+}
+
+// Close close database connection
+// コネクションは切ったり接続したりしないのがベストプラクティス。
+// アプリケーション起動中に接続しっぱなしもおかしい？
+// TODO: 閉じるタイミングを考える必要あり。
+// https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial
+func Close() {
+	if err := client.Disconnect(ctx); err != nil {
+		panic(err)
+	}
 }

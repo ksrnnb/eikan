@@ -7,24 +7,25 @@ import (
 	"gopkg.in/ini.v1"
 )
 
+var cfgFile *ini.File
 var pathConfig string
+var config map[string]string
 
 func init() {
 	pathConfig = "configs/config.ini"
 }
 
-var config map[string]string
-
-// TODO: もうちょい整理してシングルトンにしたい
+// New : pathConfigのファイルを読み込んで、mapを返す
 func New() map[string]string {
 	if config == nil {
-		cfgFile := loadConfigFile()
-		config = getConfig(cfgFile)
+		cfgFile = loadConfigFile()
+		config = getConfig()
 	}
 
 	return config
 }
 
+// ファイルの読み込み、エラーが出たら終了。
 func loadConfigFile() *ini.File {
 	cfg, err := ini.Load(pathConfig)
 	if err != nil {

@@ -1,27 +1,30 @@
 package configs
 
-import (
-	"gopkg.in/ini.v1"
-)
+// Configを追加する時はここに追加していく。
+func getConfig() map[string]string {
+	config := map[string]string{
+		"APP_ENV":     getEnvionment(),
+		"DB.ENDPOINT": getDbEndpoint(),
+		"DB.USERNAME": cfgFile.Section("DB").Key("USERNAME").String(),
+		"DB.PASSWORD": cfgFile.Section("DB").Key("PASSWORD").String(),
+	}
 
-//TODO: もうちょい見やすく分割？
-func getConfig(cfgFile *ini.File) map[string]string {
-	appEnv := cfgFile.Section("").Key("APP_ENV").String()
+	return config
+}
 
+// アプリケーション環境の取得
+func getEnvionment() string {
+	return cfgFile.Section("").Key("APP_ENV").String()
+}
+
+// Databaseのエンドポイントを取得
+func getDbEndpoint() string {
 	var dbEnd string
-	switch appEnv {
+	switch getEnvionment() {
 	case "development":
 		dbEnd = cfgFile.Section("DB").Key("DEV_ENDPOINT").String()
 	case "production":
 		dbEnd = cfgFile.Section("DB").Key("PROD_ENDPOINT").String()
 	}
-
-	config := map[string]string{
-		"APP_ENV":      appEnv,
-		"DB.ENDPOINT":  dbEnd,
-		"DB.USER_NAME": cfgFile.Section("DB").Key("USER_NAME").String(),
-		"DB.PASSWORD":  cfgFile.Section("DB").Key("PASSWORD").String(),
-	}
-
-	return config
+	return dbEnd
 }
