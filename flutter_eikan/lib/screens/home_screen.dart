@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
@@ -9,7 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var tmp = "test";
+  String tmp = "test";
+  String baseApiUrl = env['API_URL'];
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +28,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           RaisedButton(
             onPressed: () async {
-              // TODO: 環境変数
-              // flutterはホスト側であることに注意。
-              var response = await http.get('http://localhost:8000/v1');
-              if (response.statusCode == 200) {
-                var data = jsonDecode(response.body);
-                setState(() {
-                  tmp = data["message"];
-                });
-              } else {
-                print("ERROR");
+              var response;
+              try {
+                response = await http.get(baseApiUrl);
+                if (response.statusCode == 200) {
+                  var data = jsonDecode(response.body);
+                  setState(() {
+                    tmp = data["message"];
+                  });
+                } else {
+                  print("ERROR");
+                }
+              } catch (e) {
+                print("URL is incorrect.");
+                print(e);
               }
             },
             child: Text(

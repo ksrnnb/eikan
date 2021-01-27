@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_eikan/screens/home_screen.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  await DotEnv.load();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  final String appName = DotEnv.env['APP_NAME'];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // TODO: 環境変数に
-      // https://pub.dev/packages/flutter_dotenv
-      title: '栄養管理アプリ（仮）',
+      title: appName,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        appBar: AppBar(
+          title: Text(appName),
+        ),
         body: HomeScreen(),
       ),
     );
