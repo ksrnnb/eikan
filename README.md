@@ -21,8 +21,8 @@ cd flutter_eikan
 flutter pub get
 ```
 - 環境変数ファイル
-
-`golang_eikan/configs/config.example.ini` のファイルをコピーして、`config.ini`にリネームする。
+  - `golang_eikan/configs/config.example.ini` を`config.ini`にリネームする。
+  - `flutter_eikan/.env.example` を`.env`にリネームする。
 
 ## GOのビルド
 ```bash
