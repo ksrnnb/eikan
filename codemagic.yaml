@@ -10,6 +10,6 @@ workflows:
         scripts:
             - cp flutter_eikan/.env.example flutter_eikan/.env
             - |
-            cd flutter_eikan \
-            && flutter packages pub get \
-            && flutter test
+                cd flutter_eikan \
+                && flutter packages pub get \
+                && flutter test
