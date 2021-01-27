@@ -6,5 +6,6 @@ workflows:
         environment:
             flutter: dev
         scripts:
+            - cd flutter_eikan
             - flutter packages pub get
             - flutter test
