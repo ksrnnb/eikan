@@ -4,9 +4,12 @@ workflows:
     flutter-widget:
         name: Flutter Widget
         environment:
+            vars:
+
             flutter: dev
         scripts:
-            - cd flutter_eikan
-            - pwd
-            - flutter packages pub get
-            - flutter test
+            - cp flutter_eikan/.env.example flutter_eikan/.env
+            - |
+            cd flutter_eikan \
+            && flutter packages pub get \
+            && flutter test
