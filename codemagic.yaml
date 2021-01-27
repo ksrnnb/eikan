@@ -4,8 +4,6 @@ workflows:
     flutter-widget:
         name: Flutter Widget
         environment:
-            vars:
-
             flutter: dev
         scripts:
             - cp flutter_eikan/.env.example flutter_eikan/.env
