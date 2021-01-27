@@ -7,5 +7,6 @@ workflows:
             flutter: dev
         scripts:
             - cd flutter_eikan
+            - pwd
             - flutter packages pub get
             - flutter test
