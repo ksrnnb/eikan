@@ -9,9 +9,13 @@ workflows:
       events:                       # List the events that trigger builds
         - pull_request
       branch_patterns:              # Include or exclude watched branches
+        - pattern: 'main'
+          include: true
+          source: false             # mainに対するPR更新
+          cancel_previous_builds: true  # Set to `true` to automatically cancel outdated webhook builds
         - pattern: 'develop'
           include: true
-          source: true
+          source: false                 # developに対するPR更新
           cancel_previous_builds: true  # Set to `true` to automatically cancel outdated webhook builds
     scripts:
       - name: make .env file
