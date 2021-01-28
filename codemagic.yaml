@@ -1,13 +1,15 @@
 # Check out https://docs.codemagic.io/getting-started/yaml/ for more information
 
 workflows:
-    flutter-widget:
-        name: Flutter Widget
-        environment:
-            flutter: dev
-        scripts:
-            - cp flutter_eikan/.env.example flutter_eikan/.env
-            - |
-                cd flutter_eikan \
-                && flutter packages pub get \
-                && flutter test
+  flutter-widget:
+    name: Flutter Widget
+    environment:
+      flutter: dev
+    scripts:
+      - name: make .env file
+        script: cp flutter_eikan/.env.example flutter_eikan/.env
+      - name: package install & flutter test
+        script: |
+          cd flutter_eikan \
+          && flutter packages pub get \
+          && flutter test
