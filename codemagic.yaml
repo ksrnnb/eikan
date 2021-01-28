@@ -11,7 +11,7 @@ workflows:
       branch_patterns:              # Include or exclude watched branches
         - pattern: 'develop'
           include: true
-          source: false             # developがtargetのときだけ。
+          source: true
           cancel_previous_builds: true  # Set to `true` to automatically cancel outdated webhook builds
     scripts:
       - name: make .env file
