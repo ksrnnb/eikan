@@ -19,6 +19,8 @@ workflows:
           source: false                 # developに対するPR更新
           cancel_previous_builds: true  # Set to `true` to automatically cancel outdated webhook builds
     scripts:
+      # スクリプト実行時のパスは固定なので注意。
+      # https://docs.codemagic.io/flutter/custom-scripts/
       - name: make .env file
         script: cp flutter_eikan/.env.example flutter_eikan/.env
       - name: package install
@@ -30,7 +32,7 @@ workflows:
     publishing:
       slack:
         channel: '#general'
-        notify_on_build_start: false    # To receive a notification when a build starts
+        notify_on_build_start: false
         notify:
-          success: true               # To not receive a notification when a build succeeds
+          success: true
           failure: true
