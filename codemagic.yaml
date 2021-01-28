@@ -4,23 +4,22 @@ workflows:
   my-workflow:
     name: Flutter Test
     environment:
-      flutter: stable
+      flutter: dev
     triggering:
       events:                       # List the events that trigger builds
         - pull_request
       branch_patterns:              # Include or exclude watched branches
         - pattern: 'develop'
           include: true
-          source: true
+          source: false             # developがtargetのときだけ。
           cancel_previous_builds: true  # Set to `true` to automatically cancel outdated webhook builds
     scripts:
       - name: make .env file
         script: cp flutter_eikan/.env.example flutter_eikan/.env
-      - name: package install & flutter test
-        script: |
-          cd flutter_eikan \
-          && flutter packages pub get \
-          && flutter test
+      - name: package install
+        script: cd flutter_eikan && flutter packages pub get
+      - name: flutter test
+        script: cd flutter_eikan && flutter test
     artifacts:
       - flutter_drive.log
     publishing:
