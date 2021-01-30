@@ -24,6 +24,13 @@ jobs:
       - run: cd golang_eikan && go get
       - run: cd golang_eikan && go test -v ./...
 
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
       - save_cache:
           key: mod-{{ checksum "golang_eikan/go.sum" }}
           paths:
@@ -32,13 +39,13 @@ jobs:
             # ls $GOPATH/pkg/mod
             # => cache  github.com  go.mongodb.org  golang.org  gopkg.in
 
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          event: pass
-          template: success_tagged_deploy_1
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
+  # notify:
+  #   docker:
+  #     - image: 'cimg/base:stable'
+  #   steps:
+  #     - slack/notify:
+  #         event: pass
+  #         template: success_tagged_deploy_1
+  #     - slack/notify:
+  #         event: fail
+  #         template: basic_fail_1
