@@ -38,14 +38,3 @@ jobs:
             # $GOPATH == /go
             # ls $GOPATH/pkg/mod
             # => cache  github.com  go.mongodb.org  golang.org  gopkg.in
-
-  # notify:
-  #   docker:
-  #     - image: 'cimg/base:stable'
-  #   steps:
-  #     - slack/notify:
-  #         event: pass
-  #         template: success_tagged_deploy_1
-  #     - slack/notify:
-  #         event: fail
-  #         template: basic_fail_1
