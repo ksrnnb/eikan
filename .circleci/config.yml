@@ -1,0 +1,28 @@
+# https://circleci.com/docs/ja/2.0/language-go/
+# https://o296.com/2019/10/13/Circle.html
+# $ circleci config validate
+# $ circleci execute
+
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.15
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mod-{{ checksum "go.sum" }}
+            # https://circleci.com/docs/ja/2.0/caching/
+
+      - run: cd golang_eikan && go get
+      - run: cd golang_eikan && go test -v ./...
+
+      - save_cache:
+          key: mod-{{ checksum "go.sum" }}
+          paths:
+            - $GOPATH/pkg/mod
+            # $GOPATH == /go
+            # ls $GOPATH/pkg/mod
+            # => cache  github.com  go.mongodb.org  golang.org  gopkg.in
