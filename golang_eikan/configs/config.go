@@ -3,6 +3,7 @@ package configs
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/ini.v1"
 )
@@ -12,7 +13,18 @@ var pathConfig string
 var config map[string]string
 
 func init() {
-	pathConfig = "configs/config.ini"
+	if isInConfigsDirectory() {
+		// test envionment
+		pathConfig = "config.ini"
+	} else {
+		// go run main.go
+		pathConfig = "configs/config.ini"
+	}
+}
+
+func isInConfigsDirectory() bool {
+	workingDirectory, _ := os.Getwd()
+	return strings.Contains(workingDirectory, "/configs")
 }
 
 // New : pathConfigのファイルを読み込んで、mapを返す
