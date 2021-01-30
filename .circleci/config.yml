@@ -3,7 +3,9 @@
 # $ circleci config validate
 # $ circleci execute
 
-version: 2
+version: 2.1
+orbs:
+  slack: circleci/slack@4.2.0
 jobs:
   build:
     docker:
@@ -29,3 +31,14 @@ jobs:
             # $GOPATH == /go
             # ls $GOPATH/pkg/mod
             # => cache  github.com  go.mongodb.org  golang.org  gopkg.in
+
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
