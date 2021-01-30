@@ -3,7 +3,9 @@
 # $ circleci config validate
 # $ circleci execute
 
-version: 2
+version: 2.1
+orbs:
+  slack: circleci/slack@4.2.0
 jobs:
   build:
     docker:
@@ -13,14 +15,24 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - mod-{{ checksum "go.sum" }}
+            - mod-{{ checksum "golang_eikan/go.sum" }}
             # https://circleci.com/docs/ja/2.0/caching/
+            # 公式では go.sum をコミットすべきらしい。
+            # https://github.com/golang/go/wiki/Modules#should-i-commit-my-gosum-file-as-well-as-my-gomod-file
 
+      - run: cp golang_eikan/configs/config.example.ini golang_eikan/configs/config.ini
       - run: cd golang_eikan && go get
       - run: cd golang_eikan && go test -v ./...
 
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
       - save_cache:
-          key: mod-{{ checksum "go.sum" }}
+          key: mod-{{ checksum "golang_eikan/go.sum" }}
           paths:
             - $GOPATH/pkg/mod
             # $GOPATH == /go

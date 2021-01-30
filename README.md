@@ -1,5 +1,7 @@
 ## eikan (仮)
 [![Codemagic build status](https://api.codemagic.io/apps/60108cf2cb2f385f48eaa129/my-workflow/status_badge.svg)](https://codemagic.io/apps/60108cf2cb2f385f48eaa129)
+[![<CircleCI>](https://circleci.com/gh/ksrnnb/eikan.svg?style=shield)](https://app.circleci.com/pipelines/github/ksrnnb/eikan)
+
 
 栄養管理できるスマホアプリ。
 毎日食べたものを記録して、100点満点で数値化する。
