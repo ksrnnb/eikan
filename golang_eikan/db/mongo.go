@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/ksrnnb/eikan/configs"
@@ -10,11 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Client can access MongoDB
+
 var endpoint string
 var username string
 var password string
-var client *mongo.Client
 var ctx context.Context
+var client *mongo.Client
 
 func init() {
 	cfg := configs.New()
@@ -24,56 +26,44 @@ func init() {
 }
 
 // Connect create connection to MongoDB and close connection end of this method.
-func Connect() {
+func Connect() (*mongo.Client, error) {
+	if client != nil {
+		return client, nil
+	}
 	// https://docs.mongodb.com/drivers/go/
 	// context.TODO()のほうがいい？
 	// https://godoc.org/context#Background
 	var cancel context.CancelFunc
 	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	// cancelは時間経過後にcloseさせる
 	defer cancel()
 
 	// https://pkg.go.dev/go.mongodb.org/mongo-driver/mongo#example-Connect-SCRAM
-	credential := options.Credential{
-		Username: username,
-		Password: password,
-	}
+	credential := getCredential()
 
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(endpoint).SetAuth(credential))
-	if err != nil {
-		panic(err)
+
+	return client, err
+}
+
+// ConnectEikanDB returns eikan db connection
+func ConnectEikanDB() (*mongo.Database, error) {
+	if client == nil {
+		return nil, errors.New("No client has created")
 	}
+	return client.Database("eikan"), nil
+}
 
-	// TODO: 閉じるタイミングを考える必要あり。
-	defer Close()
-
-	collection := client.Database("test").Collection("trainers")
-
-	// You will be using this Trainer type later in the program
-	// 大文字にしないとマーシャルされない、たぶん。
-	type Trainer struct {
-		Name string
-		Age  int
-		City string
-	}
-
-	ash := Trainer{"Ash", 10, "Pallet Town"}
-	// misty := Trainer{"Misty", 10, "Cerulean City"}
-	// brock := Trainer{"Brock", 15, "Pewter City"}
-
-	tmp, err := collection.InsertOne(context.TODO(), ash)
-
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println("tmp: ", tmp)
+func getCredential() options.Credential {
+	return options.Credential{
+		Username: username,
+		Password: password,
 	}
 }
 
 // Close close database connection
 // コネクションは切ったり接続したりしないのがベストプラクティス。
-// アプリケーション起動中に接続しっぱなしもおかしい？
-// TODO: 閉じるタイミングを考える必要あり。
 // https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial
 func Close() {
 	if err := client.Disconnect(ctx); err != nil {

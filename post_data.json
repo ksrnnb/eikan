@@ -1,0 +1,7 @@
+// user作成
+{
+    "email": "test@test.com",
+    "password": "password",
+    "birthday": "1980-01-01",
+    "genderType": "1"
+}

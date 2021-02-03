@@ -33,3 +33,15 @@ flutter pub get
 docker-compose exec go ash
 go run main.go
 ```
+
+## Flutterテスト
+flutter_eikanディレクトリで以下のコマンドを実行する。
+```
+flutter test
+```
+
+## Goテスト
+コンテナ内に入って以下を実行。
+```
+go test ./...
+```
