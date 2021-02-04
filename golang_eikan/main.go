@@ -23,6 +23,7 @@ func init() {
 	port = ":8000"
 }
 
+// test用
 func home(w http.ResponseWriter, r *http.Request) {
 	message := utils.NewMessage("OK")
 	res, err := json.Marshal(message)
@@ -34,6 +35,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+// ユーザー登録
 func register(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 
@@ -49,7 +51,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO: validation check
-
 	// userをdbに保存
 	user.Create()
 
