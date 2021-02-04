@@ -11,15 +11,17 @@ import (
 )
 
 // User model
+// bsonも設定しておく。
+// insertするときに内部でbsonにMarshalするので、そのときに空の場合は省略される。
 type User struct {
-	ID         string `json:"id"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
-	Birthday   string `json:"birthday"` // string??
-	GenderType string `json:"genderType"`
-	CreatedAt  string `json:"createdAt"`
-	UpdatedAt  string `json:"updatedAt"`
-	DeletedAt  string `json:"deletedAt"`
+	ID         string `json:"_id,omitempty" bson:"_id,omitempty"`
+	Email      string `json:"email" bson:"email"`
+	Password   string `json:"password" bson:"password"`
+	Birthday   string `json:"birthday" bson:"birthday"` // string??
+	GenderType string `json:"genderType" bson:"genderType"`
+	CreatedAt  string `json:"createdAt" bson:"createdAt"`
+	UpdatedAt  string `json:"updatedAt" bson:"updatedAt"`
+	DeletedAt  string `json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
 }
 
 func collection() *mongo.Collection {
@@ -38,6 +40,7 @@ func collection() *mongo.Collection {
 func (user *User) Create() {
 	user.CreatedAt = utils.CurrentTime()
 	user.UpdatedAt = utils.CurrentTime()
+
 	_, err := collection().InsertOne(context.Background(), user)
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
