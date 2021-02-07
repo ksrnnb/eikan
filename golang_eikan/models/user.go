@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/ksrnnb/eikan/db"
 	"github.com/ksrnnb/eikan/utils"
@@ -14,14 +15,14 @@ import (
 // bsonも設定しておく。
 // insertするときに内部でbsonにMarshalするので、そのときに空の場合は省略される。
 type User struct {
-	ID         string `json:"_id,omitempty" bson:"_id,omitempty"`
-	Email      string `json:"email" bson:"email"`
-	Password   string `json:"password" bson:"password"`
-	Birthday   string `json:"birthday" bson:"birthday"` // string??
-	GenderType string `json:"genderType" bson:"genderType"`
-	CreatedAt  string `json:"createdAt" bson:"createdAt"`
-	UpdatedAt  string `json:"updatedAt" bson:"updatedAt"`
-	DeletedAt  string `json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
+	ID         string    `json:"_id,omitempty" bson:"_id,omitempty"`
+	Email      string    `json:"email" bson:"email"`
+	Password   string    `json:"password" bson:"password"`
+	Birthday   string    `json:"birthday" bson:"birthday"` // string??
+	GenderType int       `json:"genderType" bson:"genderType"`
+	CreatedAt  time.Time `json:"createdAt" bson:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt" bson:"updatedAt"`
+	DeletedAt  time.Time `json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
 }
 
 func collection() *mongo.Collection {
@@ -38,6 +39,7 @@ func collection() *mongo.Collection {
 
 // Create creates new user
 func (user *User) Create() {
+	user.Password = utils.GenerateHashedPassword(user.Password)
 	user.CreatedAt = utils.CurrentTime()
 	user.UpdatedAt = utils.CurrentTime()
 
