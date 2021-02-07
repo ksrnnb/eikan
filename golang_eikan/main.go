@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/ksrnnb/eikan/utils"
+
 	"github.com/gorilla/mux"
 	"github.com/ksrnnb/eikan/controllers"
 	"github.com/ksrnnb/eikan/db"
@@ -17,9 +19,10 @@ func init() {
 	host = "0.0.0.0"
 	version = "/v1"
 	port = ":8000"
+
+	utils.LoggingSetUp("/var/log/app.log")
 }
 
-// TODO: logのセットアップ
 func main() {
 
 	r := mux.NewRouter()

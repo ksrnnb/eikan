@@ -1,6 +1,8 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"encoding/json"
+)
 
 // Message model
 type Message struct {
@@ -12,8 +14,10 @@ func NewMessage(message string) *Message {
 	return &Message{Message: message}
 }
 
-// GenerateHashedPassword generates hashed password
-func GenerateHashedPassword(password string) string {
-	hash, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
-	return string(hash)
+// NewResponse create new resonse with message
+func NewResponse(message string) ([]byte, error) {
+	msg := NewMessage(message)
+	res, err := json.Marshal(msg)
+
+	return res, err
 }
