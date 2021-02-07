@@ -2,7 +2,7 @@ package models
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
 	"time"
 
@@ -37,14 +37,27 @@ func collection() *mongo.Collection {
 	return database.Collection(name)
 }
 
+// RegisterUser register user...
+func RegisterUser(requestBody []byte) error {
+	var user User
+	err := json.Unmarshal(requestBody, &user)
+
+	if err != nil {
+		return err
+	}
+
+	// ユーザー作成
+	err = user.Create()
+	return err
+}
+
 // Create creates new user
-func (user *User) Create() {
+func (user *User) Create() error {
 	user.Password = utils.GenerateHashedPassword(user.Password)
 	user.CreatedAt = utils.CurrentTime()
 	user.UpdatedAt = utils.CurrentTime()
 
 	_, err := collection().InsertOne(context.Background(), user)
-	if err != nil {
-		fmt.Printf("ERROR: %v", err)
-	}
+
+	return err
 }

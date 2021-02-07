@@ -9,7 +9,7 @@ import (
 
 // Register struct のvalidateタグがバリデーションルール
 type Register struct {
-	Email      string `json:"email" validate:"required,email"`
+	Email      string `json:"email" validate:"required,email,lte=255"`
 	Password   string `json:"password" validate:"required,lte=255"`
 	Birthday   string `json:"birthday" validate:"required,is-date"`
 	GenderType int    `json:"genderType" validate:"required,lte=5"`
