@@ -13,14 +13,14 @@ func WriteResponse(w http.ResponseWriter, jsonResponse []byte, status int) {
 
 // ReturnInternalServerError returns error response
 func ReturnInternalServerError(w http.ResponseWriter) {
-	res, _ := NewResponse("Internal Server Error")
+	res, _ := NewMessageResponse("Internal Server Error")
 
 	WriteResponse(w, res, http.StatusInternalServerError)
 }
 
 // ReturnValidationError returns error response
 func ReturnValidationError(w http.ResponseWriter) {
-	res, _ := NewResponse("Validation Error")
+	res, _ := NewMessageResponse("Validation Error")
 
 	WriteResponse(w, res, http.StatusBadRequest)
 }

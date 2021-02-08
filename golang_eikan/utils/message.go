@@ -14,8 +14,8 @@ func NewMessage(message string) *Message {
 	return &Message{Message: message}
 }
 
-// NewResponse create new resonse with message
-func NewResponse(message string) ([]byte, error) {
+// NewMessageResponse create new resonse with message
+func NewMessageResponse(message string) ([]byte, error) {
 	msg := NewMessage(message)
 	res, err := json.Marshal(msg)
 
