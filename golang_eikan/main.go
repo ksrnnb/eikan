@@ -28,6 +28,8 @@ func main() {
 	r := mux.NewRouter()
 	s := r.PathPrefix(version).Subrouter()
 	s.HandleFunc("", controllers.Home)
+	s.HandleFunc("/email", controllers.RegisterEmail)
+	s.HandleFunc("/code", controllers.VerifyCode)
 	s.HandleFunc("/register", controllers.Register)
 	http.Handle("/", s)
 	http.ListenAndServe(port, nil)

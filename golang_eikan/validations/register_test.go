@@ -8,7 +8,6 @@ import (
 
 func TestValidPattern(t *testing.T) {
 	pattern := Register{
-		Email:      "test@test.com",
 		Password:   "password",
 		Birthday:   "1999-11-11",
 		GenderType: 1,
@@ -21,46 +20,16 @@ func TestValidPattern(t *testing.T) {
 	}
 }
 
-func TestInvalidEmail(t *testing.T) {
-	pattern := Register{
-		Email:      "test@test",
-		Password:   "password",
-		Birthday:   "1999-11-11",
-		GenderType: 1,
-	}
-
-	data, _ := json.Marshal(pattern)
-
-	if ValidateRegister(data) == nil {
-		t.Errorf("Email is incorrect but validation function didn't validate")
-	}
-}
-
 func TestTooLongStr(t *testing.T) {
 	tooLongStr := strings.Repeat("a", 256)
-	tooLongEmail := tooLongStr + "@test.com"
 
 	pattern := Register{
-		Email:      tooLongEmail,
-		Password:   "password",
-		Birthday:   "1999-11-11",
-		GenderType: 1,
-	}
-
-	data, _ := json.Marshal(pattern)
-
-	if ValidateRegister(data) == nil {
-		t.Errorf("Email is too long but validation function didn't validate")
-	}
-
-	pattern = Register{
-		Email:      "test@test.com",
 		Password:   tooLongStr,
 		Birthday:   "1999-11-11",
 		GenderType: 1,
 	}
 
-	data, _ = json.Marshal(pattern)
+	data, _ := json.Marshal(pattern)
 
 	if ValidateRegister(data) == nil {
 		t.Errorf("password is too long but validation function didn't validate")
@@ -69,7 +38,6 @@ func TestTooLongStr(t *testing.T) {
 
 func TestInvalidDate(t *testing.T) {
 	pattern := Register{
-		Email:      "test@test",
 		Password:   "password",
 		Birthday:   "1999-02-29",
 		GenderType: 1,
@@ -84,7 +52,6 @@ func TestInvalidDate(t *testing.T) {
 
 func TestInvalidGenderType(t *testing.T) {
 	pattern := Register{
-		Email:      "test@test.com",
 		Password:   "password",
 		Birthday:   "1999-11-11",
 		GenderType: 10,

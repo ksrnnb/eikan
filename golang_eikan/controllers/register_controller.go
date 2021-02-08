@@ -23,11 +23,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-// Register ユーザー登録
-func Register(w http.ResponseWriter, r *http.Request) {
-	// validation
+// RegisterEmail メールアドレスの登録
+func RegisterEmail(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-	err := validations.ValidateRegister(body)
+	err := validations.ValidateEmail(body)
 
 	if err != nil {
 		utils.ErrorLog("Input validation error", err)
@@ -35,16 +34,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// userをdbに保存
-	err = models.RegisterUser(body)
+	// 認証用レコードを保存
+	err = models.RegisterEmail(body)
 	if err != nil {
-		utils.ErrorLog("User cannot be created", err)
+		utils.ErrorLog("Verify code cannot be created", err)
 		utils.ReturnInternalServerError(w)
 		return
 	}
 
 	// 保存した後
-	res, err := utils.NewResponse("User has been created")
+	res, err := utils.NewMessageResponse("Verify code has been sent")
 	if err != nil {
 		utils.ErrorLog("Cannot marshal to json", err)
 		utils.ReturnInternalServerError(w)

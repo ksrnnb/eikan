@@ -3,12 +3,10 @@ package models
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"time"
 
-	"github.com/ksrnnb/eikan/db"
 	"github.com/ksrnnb/eikan/utils"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // User model
@@ -16,25 +14,14 @@ import (
 // insertするときに内部でbsonにMarshalするので、そのときに空の場合は省略される。
 type User struct {
 	ID         string    `json:"_id,omitempty" bson:"_id,omitempty"`
-	Email      string    `json:"email" bson:"email"`
-	Password   string    `json:"password" bson:"password"`
-	Birthday   string    `json:"birthday" bson:"birthday"` // string??
-	GenderType int       `json:"genderType" bson:"genderType"`
-	CreatedAt  time.Time `json:"createdAt" bson:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt" bson:"updatedAt"`
+	Email      string    `json:"email" bson:"email,omitempty"`
+	Password   string    `json:"password" bson:"password,omitempty"`
+	Birthday   string    `json:"birthday" bson:"birthday,omitempty"`
+	GenderType int       `json:"genderType" bson:"genderType,omitempty"`
+	UserToken  string    `json:"userToken" bson:"userToken,omitempty"`
+	CreatedAt  time.Time `json:"createdAt" bson:"createdAt,omitempty"`
+	UpdatedAt  time.Time `json:"updatedAt" bson:"updatedAt,omitempty"`
 	DeletedAt  time.Time `json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
-}
-
-func collection() *mongo.Collection {
-	name := "users"
-	database, err := db.ConnectEikanDB()
-
-	if err != nil {
-		log.Printf("DB connection error: %v", err)
-		return nil
-	}
-
-	return database.Collection(name)
 }
 
 // RegisterUser register user...
@@ -47,17 +34,30 @@ func RegisterUser(requestBody []byte) error {
 	}
 
 	// ユーザー作成
-	err = user.Create()
+	err = user.Register()
 	return err
 }
 
-// Create creates new user
+// Create メールアドレスとトークンの保存
 func (user *User) Create() error {
-	user.Password = utils.GenerateHashedPassword(user.Password)
+	user.UserToken = utils.GenerateToken()
 	user.CreatedAt = utils.CurrentTime()
+	_, err := collection("users").InsertOne(context.Background(), user)
+
+	return err
+}
+
+// Register creates new user
+func (user *User) Register() error {
+	user.Password = utils.GenerateHashedPassword(user.Password)
 	user.UpdatedAt = utils.CurrentTime()
 
-	_, err := collection().InsertOne(context.Background(), user)
+	filter := bson.D{
+		{Key: "email", Value: user.Email},
+		{Key: "userToken", Value: user.UserToken},
+	}
+
+	_, err := collection("users").UpdateOne(context.Background(), filter, user)
 
 	return err
 }
